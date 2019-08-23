@@ -1,18 +1,34 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <LoginButton />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import LoginButton from "@/components/TheLoginWithSpotifyButton.vue";
 
 export default {
   name: "home",
   components: {
-    HelloWorld
+    LoginButton
+  },
+  methods: {
+    test(res) {
+      console.log(res, this);
+    }
+  },
+  mounted() {
+    const { code, state } = this.$route.query;
+    if (code && state) {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      window.testMe = this.test;
+      script.src = `https://play-gen.firebaseapp.com/token?code=${encodeURIComponent(
+        code
+      )}&state=${encodeURIComponent(state)}&callback=testMe`;
+      document.head.appendChild(script);
+    }
   }
 };
 </script>

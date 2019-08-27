@@ -22,7 +22,12 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("LOGOUT");
-      return firebase.auth().signOut();
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          location.reload();
+        });
     }
   }
 });

@@ -22,10 +22,16 @@ new Vue({
   router,
   store,
   created() {
-    firebase.auth().onAuthStateChanged(user => {
+    const unsub = firebase.auth().onAuthStateChanged(user => {
       if (user && !this.$store.state.user) {
-        const { displayName, email, photoURL } = user;
-        this.$store.commit("SET_USER_DATA", { displayName, email, photoURL });
+        unsub();
+        const { displayName, email, photoURL, uid } = user;
+        this.$store.commit("SET_USER_DATA", {
+          displayName,
+          email,
+          photoURL,
+          uid
+        });
         this.$router.push("/dashboard");
       }
     });

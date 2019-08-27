@@ -7,8 +7,7 @@ export default {
   name: "TheLoginWithSpotifyButton",
   methods: {
     handleLogin() {
-      window.location.href =
-        "https://play-gen.firebaseapp.com/redirect?callback=http://localhost:8080/callback";
+      window.location.href = "https://play-gen.firebaseapp.com/redirect";
     }
   }
 };

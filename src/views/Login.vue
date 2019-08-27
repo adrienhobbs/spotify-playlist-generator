@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import LoginButton from "@/components/TheLoginWithSpotifyButton.vue";
 import axios from "axios";
 

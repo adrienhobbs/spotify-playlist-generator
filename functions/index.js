@@ -1,26 +1,19 @@
-"use strict";
-
-const functions = require("firebase-functions");
-const cookieParser = require("cookie-parser");
-const crypto = require("crypto");
-const cors = require("cors")({
-  origin: true
-});
-
 const admin = require("firebase-admin");
 const serviceAccount = require("./service-account.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`
 });
-
-const SpotifyWebApi = require("spotify-web-api-node");
-const Spotify = new SpotifyWebApi({
-  clientId: functions.config().spotify.client_id,
-  clientSecret: functions.config().spotify.client_secret,
-  redirectUri: functions.config().spotify.redirect_uri
+const functions = require("firebase-functions");
+const cookieParser = require("cookie-parser");
+const crypto = require("crypto");
+const cors = require("cors")({
+  origin: true,
+  credentials: true
 });
-
+const createFirebaseAccount = require("./lib.js").createFirebaseAccount;
+const Spotify = require("./SpotifyApi");
+const api = require("./api.js");
 const OAUTH_SCOPES = [
   "user-read-email",
   "user-top-read",
@@ -51,7 +44,6 @@ exports.redirect = functions.https.onRequest((req, res) => {
 
 exports.token = functions.https.onRequest((req, res) => {
   return cors(req, res, () => {
-    res.set("Access-Control-Allow-Credentials", "true");
     cookieParser()(req, res, async () => {
       const session = req.cookies.__session;
       if (!session) res.status("500").json({ error: "No session variable" });
@@ -70,7 +62,9 @@ exports.token = functions.https.onRequest((req, res) => {
             ? userResults.body["images"][0].url
             : false,
           userResults.body["email"],
-          data.body["access_token"]
+          data.body["access_token"],
+          data.body["refresh_token"],
+          data.body["expires_in"]
         );
         res.json({ token: firebaseToken });
       } catch (error) {
@@ -81,44 +75,4 @@ exports.token = functions.https.onRequest((req, res) => {
   });
 });
 
-async function createFirebaseAccount(
-  spotifyID,
-  displayName,
-  photoURL,
-  email,
-  accessToken
-) {
-  const uid = `spotify:${spotifyID}`;
-
-  const databaseTask = admin
-    .database()
-    .ref(`/spotifyAccessToken/${uid}`)
-    .set(accessToken);
-
-  let user = {
-    displayName,
-    email,
-    emailVerified: true
-  };
-
-  if (photoURL) {
-    user.photoURL = photoURL;
-  }
-
-  const userCreationTask = admin
-    .auth()
-    .updateUser(uid, user)
-    .catch(error => {
-      if (error.code === "auth/user-not-found") {
-        return admin.auth().createUser({
-          uid: uid,
-          ...user
-        });
-      }
-      throw error;
-    });
-
-  await Promise.all([userCreationTask, databaseTask]);
-  const token = await admin.auth().createCustomToken(uid);
-  return token;
-}
+exports.api = functions.https.onRequest(api);

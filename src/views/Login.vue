@@ -22,9 +22,7 @@ export default {
             state,
             code
           },
-          withCredentials: true,
-          credentials: true,
-          mode: "no-cors"
+          withCredentials: true
         })
         .then(res => {
           this.$store.dispatch("login", res.data.token);

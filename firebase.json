@@ -10,7 +10,7 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
-        "source": "!(redirect|token)",
+        "source": "!(redirect|token|api{,/**})",
         "destination": "/index.html"
       },
       {

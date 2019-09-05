@@ -8,11 +8,6 @@ export default new Vuex.Store({
   state: {
     user: null
   },
-  getters: {
-    authToken: state => {
-      return state.user ? state.user.idToken : false;
-    }
-  },
   mutations: {
     SET_USER_DATA: (state, user) => {
       state.user = user;

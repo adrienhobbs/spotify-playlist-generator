@@ -9,11 +9,8 @@ export default new Vuex.Store({
     user: null
   },
   mutations: {
-    SET_USER_DATA: (state, user) => {
+    SET_USER_PROFILE_DATA: (state, user) => {
       state.user = user;
-    },
-    SET_USER_ID_TOKEN: (state, token) => {
-      state.user.idToken = token;
     },
     LOGOUT(state) {
       state.user = null;

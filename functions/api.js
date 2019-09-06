@@ -9,8 +9,30 @@ const checkTokenStatus = require("./middlewares").checkTokenStatus;
 const databaseSetup = require("./middlewares").databaseSetup;
 const Spotify = require("./SpotifyApi");
 
-// const retrieveUserTokens = require("./Database").retrieveUserTokens;
-// const retrieveUserSpotifyToken = () => {};
+function pruneArtist(artist) {
+  return {
+    genres: artist.genre,
+    href: artist.href,
+    id: artist.id,
+    images: artist.images,
+    name: artist.name,
+    popularity: artist.popularity,
+    type: artist.type
+  };
+}
+
+function pruneTrack(track) {
+  return {
+    artists: track.artists,
+    album: track.album,
+    name: track.name,
+    id: track.id,
+    href: track.href,
+    popularity: track.popularity,
+    previewUrl: track.preview_url,
+    type: track.type
+  };
+}
 
 app.use(cors);
 app.use(cookieParser);
@@ -26,27 +48,42 @@ app.get("/test-error", (req, res) => {
   res.status(403).json({ error: "Something went wrong." });
 });
 
-app.get("/top", async (req, res) => {
+app.get("/listening-data", async (req, res) => {
   const ranges = ["short_term", "medium_term", "long_term"];
 
-  const trackPromises = ranges.map(range =>
-    Spotify.getMyTopTracks({ time_range: range, limit: 50 }).then(res => ({
-      [range]: res.body.items
-    }))
+  let listeningData = {
+    tracks: {},
+    artists: {},
+    recentlyPlayed: null
+  };
+
+  const tracks = ranges.map(range =>
+    Spotify.getMyTopTracks({ time_range: range, limit: 50 }).then(res => {
+      listeningData.tracks[range] = res.body.items.map(pruneTrack);
+      return res;
+    })
   );
 
-  const artistPromises = ranges.map(range =>
-    Spotify.getMyTopArtists({ time_range: range, limit: 50 }).then(res => ({
-      [range]: res.body.items
-    }))
+  const artists = ranges.map(range =>
+    Spotify.getMyTopArtists({ time_range: range, limit: 50 }).then(res => {
+      listeningData.artists[range] = res.body.items.map(pruneArtist);
+      return res;
+    })
   );
 
-  let tracks = await Promise.all(trackPromises);
-  let artists = await Promise.all(artistPromises);
-  res.json({
-    tracks,
-    artists
+  const recentlyPlayed = Spotify.getMyRecentlyPlayedTracks({
+    limit: 50
+  }).then(res => {
+    listeningData.recentlyPlayed = res.body.items.map(history => ({
+      playedAt: history.played_at,
+      ...pruneTrack(history.track)
+    }));
+    return res;
   });
+
+  await Promise.all([...tracks, ...artists, recentlyPlayed]);
+
+  res.json(listeningData);
 });
 
 module.exports = app;

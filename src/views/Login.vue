@@ -6,7 +6,7 @@
 
 <script>
 import LoginButton from "@/components/TheLoginWithSpotifyButton.vue";
-import axios from "axios";
+import api from "@/api";
 
 export default {
   name: "home",
@@ -16,16 +16,10 @@ export default {
   mounted() {
     const { code, state } = this.$route.query;
     if (code && state) {
-      axios
-        .get("https://play-gen.firebaseapp.com/token", {
-          params: {
-            state,
-            code
-          },
-          withCredentials: true
-        })
-        .then(res => {
-          this.$store.dispatch("login", res.data.token);
+      api
+        .getToken(state, code)
+        .then(token => {
+          this.$store.dispatch("login", token);
         })
         .catch(err => {
           console.log(err);

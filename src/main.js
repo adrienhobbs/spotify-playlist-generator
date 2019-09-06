@@ -21,7 +21,9 @@ new Vue({
           photoURL,
           uid
         });
-        this.$router.push("/dashboard");
+        this.$store.dispatch("getListeningData").then(() => {
+          this.$router.push("/dashboard");
+        });
       }
     });
   },

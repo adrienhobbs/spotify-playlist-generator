@@ -14,12 +14,11 @@ new Vue({
     const unsub = firebase.auth().onAuthStateChanged(user => {
       if (user && !this.$store.state.user) {
         unsub();
-        const { displayName, email, photoURL, uid } = user;
         this.$store.commit("SET_USER_PROFILE_DATA", {
-          displayName,
-          email,
-          photoURL,
-          uid
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          uid: user.uid
         });
         this.$store.dispatch("getListeningData").then(() => {
           this.$router.push("/dashboard");

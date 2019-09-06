@@ -15,13 +15,15 @@ new Vue({
       if (user && !this.$store.state.user) {
         unsub();
         const { displayName, email, photoURL, uid } = user;
-        this.$store.commit("SET_USER_DATA", {
+        this.$store.commit("SET_USER_PROFILE_DATA", {
           displayName,
           email,
           photoURL,
           uid
         });
-        this.$router.push("/dashboard");
+        this.$store.dispatch("getListeningData").then(() => {
+          this.$router.push("/dashboard");
+        });
       }
     });
   },

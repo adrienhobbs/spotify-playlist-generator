@@ -1,9 +1,9 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
 import firebase from "./firebaseSetup";
 import "./axiosSetup";
+import store from "./store/index";
 
 Vue.config.productionTip = false;
 
@@ -12,15 +12,15 @@ new Vue({
   store,
   created() {
     const unsub = firebase.auth().onAuthStateChanged(user => {
-      if (user && !this.$store.state.user) {
+      if (user && !this.$store.state.auth.isAuthenticated) {
         unsub();
-        this.$store.commit("SET_USER_PROFILE_DATA", {
+        this.$store.commit("auth/LOGIN_USER", {
           displayName: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
           uid: user.uid
         });
-        this.$store.dispatch("getListeningData").then(() => {
+        this.$store.dispatch("listeningData/getAll").then(() => {
           this.$router.push("/dashboard");
         });
       }

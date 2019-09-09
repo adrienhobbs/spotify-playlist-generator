@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import UserDashboard from "./views/UserDashboard.vue";
 import Login from "./views/Login.vue";
-import store from "./store";
+import store from "./store/index";
 Vue.use(Router);
 
 const router = new Router({
@@ -41,7 +41,9 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (
-    to.matched.some(record => record.meta.requiresAuth && !store.state.user)
+    to.matched.some(
+      record => record.meta.requiresAuth && !store.state.auth.isAuthenticated
+    )
   ) {
     router.push("/");
   }

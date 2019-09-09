@@ -19,7 +19,7 @@ export default {
       api
         .getToken(state, code)
         .then(token => {
-          this.$store.dispatch("login", token);
+          this.$store.dispatch("auth/login", token);
         })
         .catch(err => {
           console.log(err);

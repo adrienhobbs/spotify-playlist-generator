@@ -49,7 +49,7 @@ export default {
   mounted() {},
   methods: {
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch("auth/logout");
     }
   }
 };

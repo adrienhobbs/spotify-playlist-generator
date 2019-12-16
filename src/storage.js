@@ -3,7 +3,7 @@ const msInDay = 86400000;
 const msToMins = ms => Math.round(ms * 0.00001666667);
 
 const log = msg =>
-  console.log(`%c  ${msg}  `, "background-color: #b96306; color: white;");
+  console.log(`%c  ${msg}  `, "background-color: #43b081; color: white;");
 
 const shouldUpdate = lastUpdated =>
   log(msToMins(Date.now() - lastUpdated) + " mins since last update.") ||
@@ -38,12 +38,13 @@ export default (function() {
     return getListeningDataFromLocalStorage();
   };
 
-  const getListeningData = (forceUpdate = false) => {
+  // todo remove reference to api here?? creates an unnecessary dependency...
+  const getListeningData = (forceUpdate = true) => {
     if (forceUpdate || !lastUpdated || shouldUpdate(lastUpdated)) {
       log("Get Listening Data from API!");
       return api.getListeningData().then(res => {
         setItem("lastUpdated", Date.now());
-        return setListeningDataToLocalStorage(res.data);
+        return setListeningDataToLocalStorage(res);
       });
     } else {
       log("Retrieving Listening Data from localstorage!");
@@ -53,6 +54,8 @@ export default (function() {
 
   return {
     getListeningData,
-    lastUpdated
+    lastUpdated,
+    setItem,
+    getItem
   };
 })();

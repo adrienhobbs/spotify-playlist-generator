@@ -1,6 +1,8 @@
 <template>
   <div>
+    Welcome {{ $store.state.auth.user.displayName }} <br />
     <button @click="logout">logout</button>
+    <button @click="test">test</button>
     dashboard
     <h1>short term artists</h1>
     <ul>
@@ -44,12 +46,22 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "UserDashboard",
   mounted() {},
+  computed: {
+    ...mapGetters({
+      longTermArtists: "listeningData/longTermArtists",
+      longTermTracks: "listeningData/longTermTracks"
+    })
+  },
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");
+    },
+    test() {
+      this.$store.dispatch("listeningData/getRecentlyPlayed");
     }
   }
 };

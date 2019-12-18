@@ -14,6 +14,7 @@
         <img :src="artist.images[0].url" alt="" />
         <div class="name">
           {{ artist.name }}
+          {{ artist.id }}
         </div>
       </div>
     </div>
@@ -40,6 +41,7 @@
         <img :src="artist.images[0].url" alt="" />
         <div class="name">
           {{ artist.name }}
+          {{ artist.id }}
         </div>
       </div>
     </div>
@@ -56,6 +58,7 @@
         </div>
         <div class="name">
           {{ track.name }}
+          {{ track.id }}
         </div>
       </div>
     </div>
@@ -87,6 +90,10 @@ export default {
 .container {
   max-width: 940px;
   margin: auto;
+  @media (max-width: 940px) {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
 
 .horizontal-wrapper {
@@ -100,6 +107,7 @@ export default {
     margin-right: 15px;
     margin-bottom: 15px;
     display: flex;
+    align-items: center;
     position: relative;
     flex-direction: column;
     scroll-snap-align: start;

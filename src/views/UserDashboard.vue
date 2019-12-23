@@ -1,64 +1,54 @@
 <template>
   <div class="container">
-    Welcome {{ $store.state.auth.user.displayName }} <br />
-    <button @click="logout">logout</button>
-    <button @click="test">test</button>
-    dashboard
-    <h1>short term artists</h1>
-    <div class="horizontal-wrapper">
-      <div
-        class="artist"
-        v-for="artist in $store.state.listeningData.artists.short_term"
-        :key="artist.id"
-      >
-        <img :src="artist.images[0].url" alt="" />
-        <div class="name">
-          {{ artist.name }}
-          {{ artist.id }}
+    <div class="header">
+      <button @click="logout">logout</button>
+    </div>
+    <div class="toggle">
+      <div class="toggle-inner">
+        <div
+          class="choice"
+          @click="selected = 'artists'"
+          :class="{ selected: selected === 'artists' }"
+        >
+          Artists
+        </div>
+        <div
+          class="choice"
+          @click="selected = 'tracks'"
+          :class="{ selected: selected === 'tracks' }"
+        >
+          Tracks
         </div>
       </div>
     </div>
-    <h1>medium term artists</h1>
-    <div class="horizontal-wrapper">
-      <div
-        class="artist"
-        v-for="artist in $store.state.listeningData.artists.medium_term"
-        :key="artist.id"
-      >
-        <img :src="artist.images[0].url" alt="" />
-        <div class="name">
-          {{ artist.name }}
+    <div v-if="selected === 'artists'" class="artists">
+      <div class="time-range" v-for="(range, key) in artists" :key="key">
+        <h1>{{ key }}</h1>
+        <div class="horizontal-wrapper">
+          <div class="artist" v-for="artist in range" :key="artist.id">
+            <img :src="artist.images[0].url" alt="" />
+            <div class="name">
+              {{ artist.name }}
+              <!-- {{ artist.id }} -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <h1>long term artists</h1>
-    <div class="horizontal-wrapper">
-      <div
-        class="artist"
-        v-for="artist in $store.state.listeningData.artists.long_term"
-        :key="artist.id"
-      >
-        <img :src="artist.images[0].url" alt="" />
-        <div class="name">
-          {{ artist.name }}
-          {{ artist.id }}
-        </div>
-      </div>
-    </div>
-    <h1>Recently Played</h1>
-    <div class="horizontal-wrapper">
-      <div
-        class="track"
-        v-for="track in $store.state.listeningData.recentlyPlayed"
-        :key="track.playedAt"
-      >
-        <img :src="track.album.images[0].url" alt="" />
-        <div class="name">
-          {{ track.artists[0].name }}
-        </div>
-        <div class="name">
-          {{ track.name }}
-          {{ track.id }}
+    <div v-else class="tracks">
+      <div class="time-range" v-for="(range, key) in tracks" :key="key">
+        <h1>{{ key }}</h1>
+        <div class="horizontal-wrapper">
+          <div class="track" v-for="track in range" :key="track.playedAt">
+            <img :src="track.album.images[0].url" alt="" />
+            <div class="name">
+              {{ track.artists[0].name }}
+            </div>
+            <div class="name">
+              {{ track.name }}
+              <!-- {{ track.id }} -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -69,10 +59,15 @@
 import { mapGetters } from "vuex";
 export default {
   name: "UserDashboard",
+  data() {
+    return {
+      selected: "artists"
+    };
+  },
   computed: {
     ...mapGetters({
-      longTermArtists: "listeningData/longTermArtists",
-      longTermTracks: "listeningData/longTermTracks"
+      artists: "listeningData/artists",
+      tracks: "listeningData/tracks"
     })
   },
   methods: {
@@ -131,7 +126,6 @@ export default {
       color: #b3b3b3;
       text-align: center;
       padding-top: 10px;
-      // padding: 10px 5px 10px 5px;
     }
   }
 
@@ -141,9 +135,58 @@ export default {
       padding-bottom: 0;
     }
     img {
-      height: 320px;
-      width: 320px;
+      height: 161px;
+      width: 161px;
     }
+  }
+
+  .artist {
+    img {
+      border-radius: 50%;
+    }
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2b2b2b;
+  border-radius: 15px;
+  border: 1px solid black;
+  padding: 10px;
+
+  .choice {
+    cursor: pointer;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 15px;
+  }
+
+  .choice:first-of-type {
+    margin-right: 10px;
+  }
+
+  .choice.selected {
+    background: green;
+  }
+}
+.header {
+  margin-bottom: 30px;
+  padding-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    padding: 5px;
+    border-radius: 5px;
   }
 }
 </style>

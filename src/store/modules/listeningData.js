@@ -38,11 +38,25 @@ const getters = {
   },
   longTermArtists(state) {
     return state.artists.long_term;
+  },
+  tracks(state) {
+    return {
+      short_term: state.tracks.short_term,
+      medium_term: state.tracks.medium_term,
+      long_term: state.tracks.long_term
+    };
+  },
+  artists(state) {
+    return {
+      short_term: state.artists.short_term,
+      medium_term: state.artists.medium_term,
+      long_term: state.artists.long_term
+    };
   }
 };
 
 const actions = {
-  getAll({ commit }, forceUpdate = true) {
+  getAll({ commit }, forceUpdate = false) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {
         tracks: data.tracks,

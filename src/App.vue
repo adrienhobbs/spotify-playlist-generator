@@ -12,7 +12,6 @@
   color: white;
   background-color: #111111;
   min-height: 100vh;
-  padding-top: 60px;
   padding-bottom: 60px;
 }
 </style>

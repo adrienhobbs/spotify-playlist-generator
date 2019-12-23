@@ -4,6 +4,7 @@ import router from "./router";
 import firebase from "./firebaseSetup";
 import "./axiosSetup";
 import store from "./store/index";
+import "normalize.css";
 
 Vue.config.productionTip = false;
 

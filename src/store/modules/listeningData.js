@@ -1,4 +1,5 @@
 import Storage from "@/storage";
+import Api from "@/api";
 
 const state = {
   tracks: [],
@@ -13,13 +14,35 @@ const mutations = {
     state.artists = artists;
     state.recentlyPlayed = recentlyPlayed;
     state.updatedAt = updatedAt;
+  },
+  SET_RECENTLY_PLAYED(state, recentlyPlayed) {
+    state.recentlyPlayed = recentlyPlayed;
   }
 };
 
-const getters = {};
+const getters = {
+  shortTermTracks(state) {
+    return state.tracks.short_term;
+  },
+  mediumTermTracks(state) {
+    return state.tracks.medium_term;
+  },
+  longTermTracks(state) {
+    return state.tracks.long_term;
+  },
+  shortTermArtists(state) {
+    return state.artists.short_term;
+  },
+  mediumTermArtists(state) {
+    return state.artists.medium_term;
+  },
+  longTermArtists(state) {
+    return state.artists.long_term;
+  }
+};
 
 const actions = {
-  getAll({ commit }, forceUpdate = false) {
+  getAll({ commit }, forceUpdate = true) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {
         tracks: data.tracks,
@@ -27,6 +50,13 @@ const actions = {
         recentlyPlayed: data.recentlyPlayed,
         updatedAt: data.lastUpdated
       });
+    });
+  },
+  getRecentlyPlayed({ commit }) {
+    return Api.getRecentlyPlayed().then(res => {
+      commit("SET_RECENTLY_PLAYED", res.recentlyPlayed);
+      Storage.setItem("recentlyPlayed", res.recentlyPlayed);
+      return res.recentlyPlayed;
     });
   }
 };

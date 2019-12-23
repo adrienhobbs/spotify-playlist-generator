@@ -39,7 +39,7 @@ export default (function() {
   };
 
   // todo remove reference to api here?? creates an unnecessary dependency...
-  const getListeningData = (forceUpdate = true) => {
+  const getListeningData = (forceUpdate = false) => {
     if (forceUpdate || !lastUpdated || shouldUpdate(lastUpdated)) {
       log("Get Listening Data from API!");
       return api.getListeningData().then(res => {

@@ -42,7 +42,7 @@ const getters = {
 };
 
 const actions = {
-  getAll({ commit }, forceUpdate = true) {
+  getAll({ commit }, forceUpdate = false) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {
         tracks: data.tracks,

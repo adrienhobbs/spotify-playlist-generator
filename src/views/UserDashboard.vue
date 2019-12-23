@@ -131,7 +131,6 @@ export default {
       color: #b3b3b3;
       text-align: center;
       padding-top: 10px;
-      // padding: 10px 5px 10px 5px;
     }
   }
 
@@ -143,6 +142,12 @@ export default {
     img {
       height: 320px;
       width: 320px;
+    }
+  }
+
+  .artist {
+    img {
+      border-radius: 50%;
     }
   }
 }

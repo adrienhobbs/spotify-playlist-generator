@@ -19,7 +19,7 @@ export default {
       type: Boolean,
       default: true
     },
-    selected: Boolean
+    item: Object
   },
   methods: {
     toggleSelected() {

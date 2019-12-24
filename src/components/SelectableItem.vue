@@ -4,8 +4,8 @@
       @input="toggleSelected"
       type="checkbox"
       class="checkbox"
-      :disabled="!canSelect && !selected"
-      v-model="selected"
+      :disabled="!canSelect && !item.selected"
+      v-model="item.selected"
     />
     <slot />
   </div>
@@ -18,22 +18,12 @@ export default {
     canSelect: {
       type: Boolean,
       default: true
-    }
-  },
-  data() {
-    return {
-      selected: ""
-    };
+    },
+    selected: Boolean
   },
   methods: {
     toggleSelected() {
-      const emitType = this.selected ? "deselected" : "selected";
-      this.selected =
-        this.canSelect || (this.selected && !this.canSelect)
-          ? ""
-          : this.selected;
-
-      this.$emit(emitType);
+      this.$store.dispatch("listeningData/toggleItem", this.item);
     }
   }
 };

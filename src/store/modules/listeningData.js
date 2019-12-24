@@ -17,6 +17,12 @@ const mutations = {
   },
   SET_RECENTLY_PLAYED(state, recentlyPlayed) {
     state.recentlyPlayed = recentlyPlayed;
+  },
+  SELECT_ITEM(state, item) {
+    item.selected = true;
+  },
+  DESELECT_ITEM(state, item) {
+    item.selected = false;
   }
 };
 
@@ -56,6 +62,14 @@ const getters = {
 };
 
 const actions = {
+  async toggleItem({ commit, dispatch }, item) {
+    const mutationType = item.selected ? "DESELECT_ITEM" : "SELECT_ITEM";
+    const seedActionType = item.selected
+      ? "seed/removeSeedItem"
+      : "seed/addSeedItem";
+    commit(mutationType, item);
+    dispatch(seedActionType, item, { root: true });
+  },
   getAll({ commit }, forceUpdate = false) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {

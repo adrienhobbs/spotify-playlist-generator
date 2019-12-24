@@ -25,30 +25,23 @@
       <div class="time-range" v-for="(range, key) in artists" :key="key">
         <h1>{{ key }}</h1>
         <div class="horizontal-wrapper">
-          <div class="artist" v-for="artist in range" :key="artist.id">
-            <img :src="artist.images[0].url" alt="" />
-            <div class="name">
-              {{ artist.name }}
-              <!-- {{ artist.id }} -->
-            </div>
-          </div>
+          <SelectableArtist
+            v-for="artist in range"
+            :artist="artist"
+            :key="artist.id"
+          />
         </div>
       </div>
     </div>
-    <div v-else class="tracks">
+    <div v-else-if="selected === 'tracks'" class="tracks">
       <div class="time-range" v-for="(range, key) in tracks" :key="key">
         <h1>{{ key }}</h1>
         <div class="horizontal-wrapper">
-          <div class="track" v-for="track in range" :key="track.playedAt">
-            <img :src="track.album.images[0].url" alt="" />
-            <div class="name">
-              {{ track.artists[0].name }}
-            </div>
-            <div class="name">
-              {{ track.name }}
-              <!-- {{ track.id }} -->
-            </div>
-          </div>
+          <SelectableTrack
+            v-for="track in range"
+            :track="track"
+            :key="track.playedAt"
+          />
         </div>
       </div>
     </div>
@@ -57,8 +50,15 @@
 
 <script>
 import { mapGetters } from "vuex";
+import SelectableTrack from "../components/SelectableTrack";
+import SelectableArtist from "../components/SelectableArtist";
+
 export default {
   name: "UserDashboard",
+  components: {
+    SelectableArtist,
+    SelectableTrack
+  },
   data() {
     return {
       selected: "artists"
@@ -76,6 +76,11 @@ export default {
     },
     test() {
       this.$store.dispatch("listeningData/getRecentlyPlayed");
+    },
+    isSelected(id) {
+      return this.$store.state.listeningData.artists.find(
+        artist => artist.id === id
+      );
     }
   }
 };
@@ -128,23 +133,6 @@ export default {
       padding-top: 10px;
     }
   }
-
-  .track {
-    .name:first-of-type {
-      font-size: 22px;
-      padding-bottom: 0;
-    }
-    img {
-      height: 161px;
-      width: 161px;
-    }
-  }
-
-  .artist {
-    img {
-      border-radius: 50%;
-    }
-  }
 }
 
 .toggle {
@@ -158,7 +146,7 @@ export default {
   align-items: center;
   justify-content: center;
   background-color: #2b2b2b;
-  border-radius: 15px;
+  border-radius: 30px;
   border: 1px solid black;
   padding: 10px;
 
@@ -178,6 +166,7 @@ export default {
     background: green;
   }
 }
+
 .header {
   margin-bottom: 30px;
   padding-top: 30px;

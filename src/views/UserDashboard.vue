@@ -21,25 +21,39 @@
         </div>
       </div>
     </div>
-    <div v-if="selected === 'artists'" class="artists">
+    <div v-show="selected === 'artists'" class="artists">
       <div class="time-range" v-for="(range, key) in artists" :key="key">
         <h1>{{ key }}</h1>
         <div class="horizontal-wrapper">
-          <div class="artist" v-for="artist in range" :key="artist.id">
+          <SelectableItem
+            @selected="$store.dispatch('seed/addSeedItem', artist)"
+            @deselected="$store.dispatch('seed/removeSeedItem', artist)"
+            :canSelect="canSelect"
+            class="artist"
+            v-for="artist in range"
+            :key="artist.id"
+          >
             <img :src="artist.images[0].url" alt="" />
             <div class="name">
               {{ artist.name }}
               <!-- {{ artist.id }} -->
             </div>
-          </div>
+          </SelectableItem>
         </div>
       </div>
     </div>
-    <div v-else class="tracks">
+    <div v-show="selected === 'tracks'" class="tracks">
       <div class="time-range" v-for="(range, key) in tracks" :key="key">
         <h1>{{ key }}</h1>
         <div class="horizontal-wrapper">
-          <div class="track" v-for="track in range" :key="track.playedAt">
+          <SelectableItem
+            @selected="$store.dispatch('seed/addSeedItem', track)"
+            @deselected="$store.dispatch('seed/removeSeedItem', track)"
+            :canSelect="canSelect"
+            class="track"
+            v-for="track in range"
+            :key="track.playedAt"
+          >
             <img :src="track.album.images[0].url" alt="" />
             <div class="name">
               {{ track.artists[0].name }}
@@ -48,7 +62,7 @@
               {{ track.name }}
               <!-- {{ track.id }} -->
             </div>
-          </div>
+          </SelectableItem>
         </div>
       </div>
     </div>
@@ -57,8 +71,12 @@
 
 <script>
 import { mapGetters } from "vuex";
+import SelectableItem from "../components/SelectableItem";
 export default {
   name: "UserDashboard",
+  components: {
+    SelectableItem
+  },
   data() {
     return {
       selected: "artists"
@@ -67,7 +85,8 @@ export default {
   computed: {
     ...mapGetters({
       artists: "listeningData/artists",
-      tracks: "listeningData/tracks"
+      tracks: "listeningData/tracks",
+      canSelect: "seed/canSelect"
     })
   },
   methods: {
@@ -76,6 +95,11 @@ export default {
     },
     test() {
       this.$store.dispatch("listeningData/getRecentlyPlayed");
+    },
+    isSelected(id) {
+      return this.$store.state.listeningData.artists.find(
+        artist => artist.id === id
+      );
     }
   }
 };
@@ -158,7 +182,7 @@ export default {
   align-items: center;
   justify-content: center;
   background-color: #2b2b2b;
-  border-radius: 15px;
+  border-radius: 30px;
   border: 1px solid black;
   padding: 10px;
 

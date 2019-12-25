@@ -10,8 +10,6 @@ const databaseSetup = require("./middlewares").databaseSetup;
 const Spotify = require("./SpotifyApi");
 const ranges = ["short_term", "medium_term", "long_term"];
 
-const testPlaylistId = "0ktqebeQizuRnstoVJzjGL";
-
 function pruneArtist(artist) {
   return {
     genres: artist.genre,
@@ -74,7 +72,7 @@ function getRecommendations({ seed_artists, seed_tracks }) {
 }
 
 async function addTracksToPlaylist(tracks, playlistId) {
-  return Spotify.addTracksToPlaylist(playlistId || testPlaylistId, "", {
+  return Spotify.addTracksToPlaylist(playlistId, "", {
     uris: tracks
   });
 }
@@ -86,20 +84,16 @@ app.use(databaseSetup);
 app.use(checkTokenStatus);
 
 app.get("/add-tracks-to-playlist", async (req, res) => {
-  const test = await addTracksToPlaylist(
+  const playlistSnapshot = await addTracksToPlaylist(
     req.query.tracks,
     req.query.playlistId
   );
-  res.json(test);
+  res.json(playlistSnapshot);
 });
 
 app.get("/get-recommendations", async (req, res) => {
-  try {
-    const recs = await getRecommendations(JSON.parse(req.query.seed_data));
-    res.json(recs);
-  } catch (err) {
-    res.json(err);
-  }
+  const recs = await getRecommendations(JSON.parse(req.query.seed_data));
+  res.json(recs);
 });
 
 app.get("/top-tracks", async (req, res) => {

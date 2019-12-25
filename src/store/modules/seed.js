@@ -1,9 +1,11 @@
 import Api from "@/api";
+import Spot from "../../testapi";
 
 const state = {
   tracks: [],
   artists: [],
-  genres: []
+  genres: [],
+  recommendations: []
 };
 
 const mutations = {
@@ -47,6 +49,13 @@ const actions = {
     const mutationType =
       item.type === "artist" ? "REMOVE_ARTIST" : "REMOVE_TRACK";
     commit(mutationType, item);
+  },
+  async getRecommendations({ commit, state }) {
+    const seed_artists = state.artists.map(artist => artist.id);
+    const seed_tracks = state.tracks.map(track => track.id);
+    const tracks = await Api.getRecommendations({ seed_artists, seed_tracks });
+    const trackUris = tracks.map(track => track.uri).join(",");
+    await Api.addTracksToPlaylist(trackUris);
   }
 };
 

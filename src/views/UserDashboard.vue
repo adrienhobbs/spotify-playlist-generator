@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="header">
+      <button @click="test">test</button>
       <button @click="logout">logout</button>
     </div>
     <div class="toggle">
@@ -61,7 +62,7 @@ export default {
   },
   data() {
     return {
-      selected: "artists"
+      selected: "tracks"
     };
   },
   computed: {
@@ -75,7 +76,7 @@ export default {
       this.$store.dispatch("auth/logout");
     },
     test() {
-      this.$store.dispatch("listeningData/getRecentlyPlayed");
+      this.$store.dispatch("seed/getRecommendations");
     },
     isSelected(id) {
       return this.$store.state.listeningData.artists.find(

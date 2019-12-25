@@ -27,29 +27,12 @@ const mutations = {
 };
 
 const getters = {
-  shortTermTracks(state) {
-    return state.tracks.short_term;
-  },
-  mediumTermTracks(state) {
-    return state.tracks.medium_term;
-  },
-  longTermTracks(state) {
-    return state.tracks.long_term;
-  },
-  shortTermArtists(state) {
-    return state.artists.short_term;
-  },
-  mediumTermArtists(state) {
-    return state.artists.medium_term;
-  },
-  longTermArtists(state) {
-    return state.artists.long_term;
-  },
   tracks(state) {
     return {
       short_term: state.tracks.short_term,
       medium_term: state.tracks.medium_term,
-      long_term: state.tracks.long_term
+      long_term: state.tracks.long_term,
+      recent: state.recentlyPlayed
     };
   },
   artists(state) {
@@ -70,7 +53,7 @@ const actions = {
     commit(mutationType, item);
     dispatch(seedActionType, item, { root: true });
   },
-  getAll({ commit }, forceUpdate = false) {
+  getAll({ commit }, forceUpdate = true) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {
         tracks: data.tracks,

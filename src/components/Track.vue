@@ -6,7 +6,7 @@
     </div>
     <div class="name">
       {{ track.name }}
-      <!-- {{ track.id }} -->
+      {{ track.id }}
     </div>
   </div>
 </template>

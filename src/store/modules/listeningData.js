@@ -49,7 +49,8 @@ const getters = {
     return {
       short_term: state.tracks.short_term,
       medium_term: state.tracks.medium_term,
-      long_term: state.tracks.long_term
+      long_term: state.tracks.long_term,
+      recent: state.recentlyPlayed
     };
   },
   artists(state) {
@@ -70,7 +71,7 @@ const actions = {
     commit(mutationType, item);
     dispatch(seedActionType, item, { root: true });
   },
-  getAll({ commit }, forceUpdate = false) {
+  getAll({ commit }, forceUpdate = true) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {
         tracks: data.tracks,

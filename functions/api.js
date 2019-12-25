@@ -10,6 +10,8 @@ const databaseSetup = require("./middlewares").databaseSetup;
 const Spotify = require("./SpotifyApi");
 const ranges = ["short_term", "medium_term", "long_term"];
 
+const testPlaylistId = "0ktqebeQizuRnstoVJzjGL";
+
 function pruneArtist(artist) {
   return {
     genres: artist.genre,
@@ -18,7 +20,8 @@ function pruneArtist(artist) {
     images: artist.images,
     name: artist.name,
     popularity: artist.popularity,
-    type: artist.type
+    type: artist.type,
+    external_urls: artist.external_urls
   };
 }
 
@@ -31,8 +34,14 @@ function pruneTrack(track) {
     href: track.href,
     popularity: track.popularity,
     previewUrl: track.preview_url,
-    type: track.type
+    type: track.type,
+    external_urls: track.external_urls,
+    uri: track.uri
   };
+}
+
+function getUser() {
+  return Spotify.getMe();
 }
 
 function getTopTracks(time_range) {
@@ -58,11 +67,40 @@ function getRecentlyPlayed() {
   });
 }
 
+function getRecommendations({ seed_artists, seed_tracks }) {
+  return Spotify.getRecommendations({ seed_artists, seed_tracks }).then(res =>
+    res.body.tracks.map(pruneTrack)
+  );
+}
+
+async function addTracksToPlaylist(tracks, playlistId) {
+  return Spotify.addTracksToPlaylist(playlistId || testPlaylistId, "", {
+    uris: tracks
+  });
+}
+
 app.use(cors);
 app.use(cookieParser);
 app.use(validateFirebaseIdToken);
 app.use(databaseSetup);
 app.use(checkTokenStatus);
+
+app.get("/add-tracks-to-playlist", async (req, res) => {
+  const test = await addTracksToPlaylist(
+    req.query.tracks,
+    req.query.playlistId
+  );
+  res.json(test);
+});
+
+app.get("/get-recommendations", async (req, res) => {
+  try {
+    const recs = await getRecommendations(JSON.parse(req.query.seed_data));
+    res.json(recs);
+  } catch (err) {
+    res.json(err);
+  }
+});
 
 app.get("/top-tracks", async (req, res) => {
   const short_term = await getTopTracks("short_term");
@@ -73,13 +111,10 @@ app.get("/top-tracks", async (req, res) => {
 });
 
 app.get("/top-artists", async (req, res) => {
-  try {
-    const short_term = await getTopArtists("short_term");
-    const medium_term = await getTopArtists("medium_term");
-    const long_term = await getTopArtists("long_term");
-  } catch (err) {
-    res.json({ short_term, medium_term, long_term });
-  }
+  const short_term = await getTopArtists("short_term");
+  const medium_term = await getTopArtists("medium_term");
+  const long_term = await getTopArtists("long_term");
+  res.json({ short_term, medium_term, long_term });
 });
 
 app.get("/recently-played", async (req, res) => {

@@ -2,12 +2,21 @@ import axios from "axios";
 const API_BASE_URL = "https://us-central1-play-gen.cloudfunctions.net/api";
 const HOSTING_BASE_URL = "https://play-gen.firebaseapp.com";
 
-const apiGet = path =>
-  axios.get(`${API_BASE_URL}/${path}`).then(res => res.data);
+const apiGet = (path, params = {}) =>
+  axios.get(`${API_BASE_URL}/${path}`, { params }).then(res => res.data);
 
 export default {
+  addTracksToPlaylist(tracks) {
+    return apiGet(`add-tracks-to-playlist`, {
+      tracks,
+      playlistId: "70ScZLnwTbU5aSTa6YthW6"
+    });
+  },
   getListeningData() {
     return apiGet(`listening-data`);
+  },
+  getRecommendations(seed_data) {
+    return apiGet(`get-recommendations`, { seed_data });
   },
   getToken(state, code) {
     return axios

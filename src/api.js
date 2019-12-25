@@ -9,7 +9,7 @@ export default {
   addTracksToPlaylist(tracks) {
     return apiGet(`add-tracks-to-playlist`, {
       tracks,
-      playlistId: "70ScZLnwTbU5aSTa6YthW6"
+      playlistId: "0ktqebeQizuRnstoVJzjGL"
     });
   },
   getListeningData() {

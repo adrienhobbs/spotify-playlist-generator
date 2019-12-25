@@ -27,24 +27,6 @@ const mutations = {
 };
 
 const getters = {
-  shortTermTracks(state) {
-    return state.tracks.short_term;
-  },
-  mediumTermTracks(state) {
-    return state.tracks.medium_term;
-  },
-  longTermTracks(state) {
-    return state.tracks.long_term;
-  },
-  shortTermArtists(state) {
-    return state.artists.short_term;
-  },
-  mediumTermArtists(state) {
-    return state.artists.medium_term;
-  },
-  longTermArtists(state) {
-    return state.artists.long_term;
-  },
   tracks(state) {
     return {
       short_term: state.tracks.short_term,

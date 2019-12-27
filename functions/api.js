@@ -20,7 +20,8 @@ function pruneArtist(artist) {
     popularity: artist.popularity,
     type: artist.type,
     external_urls: artist.external_urls,
-    followers: artist.followers
+    followers: artist.followers,
+    selected: false
   };
 }
 
@@ -35,7 +36,8 @@ function pruneTrack(track) {
     previewUrl: track.preview_url,
     type: track.type,
     external_urls: track.external_urls,
-    uri: track.uri
+    uri: track.uri,
+    selected: false
   };
 }
 

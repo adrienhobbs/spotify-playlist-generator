@@ -1,8 +1,6 @@
 <template>
   <div class="artist" :class="{ selected: artist.selected }">
-    <a :href="artist.external_urls.spotify" target="_blank">
-      <img :src="artist.images[2].url" alt="" />
-    </a>
+    <img :src="artist.images[2].url" alt="" />
     <a class="artist-name" :href="artist.external_urls.spotify" target="_blank">
       {{ artist.name }}
     </a>

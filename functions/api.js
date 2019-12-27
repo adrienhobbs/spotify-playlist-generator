@@ -19,7 +19,8 @@ function pruneArtist(artist) {
     name: artist.name,
     popularity: artist.popularity,
     type: artist.type,
-    external_urls: artist.external_urls
+    external_urls: artist.external_urls,
+    followers: artist.followers
   };
 }
 

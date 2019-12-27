@@ -12,7 +12,7 @@ const ranges = ["short_term", "medium_term", "long_term"];
 
 function pruneArtist(artist) {
   return {
-    genres: artist.genre,
+    genres: artist.genres,
     href: artist.href,
     id: artist.id,
     images: artist.images,

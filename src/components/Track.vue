@@ -1,12 +1,19 @@
 <template>
-  <div class="track">
-    <img :src="track.album.images[0].url" alt="" />
-    <div class="name">
-      {{ track.artists[0].name }}
-    </div>
-    <div class="name">
-      {{ track.name }}
-      {{ track.id }}
+  <div class="track" :class="{ selected: track.selected }">
+    <a :href="track.album.external_urls.spotify" target="_blank">
+      <img :src="track.album.images[2].url" alt="" />
+    </a>
+    <div class="track-info">
+      <a class="track-name" :href="track.external_urls.spotify" target="_blank">
+        {{ track.name }}
+      </a>
+      <a
+        class="artist-name"
+        :href="track.artists[0].external_urls.spotify"
+        target="_blank"
+      >
+        {{ track.artists[0].name }}
+      </a>
     </div>
   </div>
 </template>
@@ -25,13 +32,23 @@ export default {
 
 <style lang="scss">
 .track {
-  .name:first-of-type {
-    font-size: 22px;
-    padding-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  img {
-    height: 161px;
-    width: 161px;
+
+  .track-name {
+    margin-bottom: 5px;
+    color: white;
+    font-size: 16px;
+  }
+
+  .artist-name {
+    font-size: 14px;
   }
 }
 </style>

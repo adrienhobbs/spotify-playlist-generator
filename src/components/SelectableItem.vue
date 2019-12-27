@@ -1,12 +1,9 @@
 <template>
-  <div class="selectable-item">
-    <input
-      @input="toggleSelected"
-      type="checkbox"
-      class="checkbox"
-      :disabled="!canSelect && !item.selected"
-      v-model="item.selected"
-    />
+  <div
+    @click="toggleSelected"
+    class="selectable-item"
+    :class="{ disabled: !canSelect && !item.selected }"
+  >
     <slot />
   </div>
 </template>
@@ -23,10 +20,22 @@ export default {
   },
   methods: {
     toggleSelected() {
-      this.$store.dispatch("listeningData/toggleItem", this.item);
+      if (this.canSelect || this.item.selected) {
+        this.$store.dispatch("listeningData/toggleItem", this.item);
+      }
     }
   }
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.selectable-item {
+  position: relative;
+  margin-left: 5px;
+  margin-right: 5px;
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
+</style>

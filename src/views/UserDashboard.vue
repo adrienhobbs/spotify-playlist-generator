@@ -23,8 +23,6 @@
       </div>
     </div>
     <div v-if="selected === 'artists'" class="artists">
-      <!-- <div class="time-range" v-for="(range, key) in artists" :key="key">
-        <h1>{{ key }}</h1> -->
       <div class="vertical-wrapper">
         <SelectableArtist
           v-for="artist in allArtists"
@@ -32,11 +30,8 @@
           :key="artist.id"
         />
       </div>
-      <!-- </div> -->
     </div>
     <div v-else-if="selected === 'tracks'" class="tracks">
-      <!-- <div class="time-range" v-for="(range, key) in tracks" :key="key"> -->
-      <!-- <h1>{{ key }}</h1> -->
       <div class="vertical-wrapper">
         <SelectableTrack
           v-for="track in allTracks"
@@ -44,7 +39,6 @@
           :key="track.playedAt"
         />
       </div>
-      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -119,6 +113,10 @@ export default {
 </script>
 
 <style lang="scss">
+$green: #2f7353;
+$white: #dadada;
+$black: #1d1d1d;
+
 .container {
   max-width: 940px;
   margin: auto;
@@ -130,38 +128,51 @@ export default {
 }
 
 .vertical-wrapper {
-  background: #1d1d1d;
+  background: $black;
   border-radius: 15px;
+  border: 1px solid #323232;
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-evenly;
   flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .artist,
 .track {
+  position: relative;
+  cursor: pointer;
   margin-bottom: 15px;
   display: flex;
   position: relative;
-  background-color: #2b2b2b;
+  background-color: #121212;
   padding: 10px 15px 10px 15px;
   border-radius: 8px;
   align-items: center;
+  border: 1px solid #070707;
+  transition: all 0.15s ease-out;
 
   &.selected {
-    background-color: #fff;
+    background-color: $green;
+  }
+
+  &:hover {
+    transform: scale(1.2);
+    border: 1px solid $white;
+    z-index: 10;
   }
 
   a {
     text-decoration: none;
-    color: #b3b3b3;
+    color: #f2e5d5;
+    display: flex;
 
     &:hover {
-      color: white;
+      color: $white;
       text-decoration: underline;
     }
   }
@@ -198,9 +209,9 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #2b2b2b;
+  background-color: $black;
   border-radius: 30px;
-  border: 1px solid black;
+  border: 1px solid #323232;
   padding: 10px;
 
   .choice {
@@ -216,7 +227,7 @@ export default {
   }
 
   .choice.selected {
-    background: green;
+    background-color: $green;
   }
 }
 

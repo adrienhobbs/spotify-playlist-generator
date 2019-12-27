@@ -1,10 +1,13 @@
 <template>
-  <div class="artist">
-    <img :src="artist.images[0].url" alt="" />
-    <div class="name">
+  <div class="artist" :class="{ selected: artist.selected }">
+    <a :href="artist.external_urls.spotify" target="_blank">
+      <img :src="artist.images[2].url" alt="" />
+    </a>
+    <a class="artist-name" :href="artist.external_urls.spotify" target="_blank">
       {{ artist.name }}
-      {{ artist.selected }}
-    </div>
+    </a>
+    <!-- {{ artist.popularity }} -->
+    <!-- {{ artist.id }} -->
   </div>
 </template>
 

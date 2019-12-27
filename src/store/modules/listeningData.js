@@ -53,7 +53,7 @@ const actions = {
     commit(mutationType, item);
     dispatch(seedActionType, item, { root: true });
   },
-  getAll({ commit }, forceUpdate = true) {
+  getAll({ commit }, forceUpdate = false) {
     return Storage.getListeningData(forceUpdate).then(data => {
       commit("SET_ALL", {
         tracks: data.tracks,

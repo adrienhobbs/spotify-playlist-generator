@@ -69,6 +69,7 @@ export default {
     })
   },
   mounted() {
+    // lets move this into the store
     const allTracks = uniqBy(
       [
         ...this.tracks.recent,
@@ -87,6 +88,22 @@ export default {
       ],
       "id"
     );
+
+    let genreCounts = {};
+
+    allArtists.forEach(artist => {
+      artist.genres.forEach(genre => {
+        genreCounts[genre] = genreCounts[genre] ? genreCounts[genre] + 1 : 1;
+      });
+    });
+
+    const counts = Object.values(genreCounts);
+    const names = Object.keys(genreCounts);
+    const topGenres = counts
+      .map((count, i) => ({ count, name: names[i] }))
+      .sort((a, b) => a.count < b.count)
+      .splice(0, 25);
+    console.log(topGenres);
 
     this.allTracks = allTracks.sort((trackA, trackB) => {
       return trackA.popularity < trackB.popularity;

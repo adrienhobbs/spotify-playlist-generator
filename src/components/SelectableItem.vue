@@ -33,6 +33,7 @@ export default {
   position: relative;
   margin-left: 5px;
   margin-right: 5px;
+  transition: opacity 0.2s ease-in-out;
 
   &.disabled {
     opacity: 0.5;

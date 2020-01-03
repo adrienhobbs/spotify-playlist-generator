@@ -22,22 +22,42 @@
         </div>
       </div>
     </div>
-    <div v-if="selected === 'artists'" class="artists">
-      <div class="vertical-wrapper">
-        <SelectableArtist
-          v-for="artist in allArtists"
-          :artist="artist"
-          :key="artist.id"
-        />
+    <div class="selected-container">
+      <div class="selected-items">
+        <div v-if="!selectedItems.length">
+          Select up to 5 artists or tracks to get started.
+        </div>
+        <div class="selected-item" v-for="item in selectedItems" :key="item.id">
+          <img
+            :src="item.images ? item.images[0].url : item.album.images[0].url"
+            alt=""
+          />
+        </div>
+        <div
+          class="img-placeholder"
+          v-for="n in 5 - selectedItems.length"
+          :key="n"
+        ></div>
       </div>
     </div>
-    <div v-else-if="selected === 'tracks'" class="tracks">
-      <div class="vertical-wrapper">
-        <SelectableTrack
-          v-for="track in allTracks"
-          :track="track"
-          :key="track.playedAt"
-        />
+    <div class="content-container">
+      <div v-if="selected === 'artists'" class="artists">
+        <div class="vertical-wrapper">
+          <SelectableArtist
+            v-for="artist in allArtists"
+            :artist="artist"
+            :key="artist.id"
+          />
+        </div>
+      </div>
+      <div v-else-if="selected === 'tracks'" class="tracks">
+        <div class="vertical-wrapper">
+          <SelectableTrack
+            v-for="track in allTracks"
+            :track="track"
+            :key="track.playedAt"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -65,7 +85,8 @@ export default {
   computed: {
     ...mapGetters({
       artists: "listeningData/artists",
-      tracks: "listeningData/tracks"
+      tracks: "listeningData/tracks",
+      selectedItems: "seed/selectedItems"
     })
   },
   mounted() {
@@ -101,8 +122,8 @@ export default {
     const names = Object.keys(genreCounts);
     const topGenres = counts
       .map((count, i) => ({ count, name: names[i] }))
-      .sort((a, b) => a.count < b.count)
-      .splice(0, 25);
+      .sort((a, b) => a.count < b.count);
+    // .splice(0, 25);
     console.log(topGenres);
 
     this.allTracks = allTracks.sort((trackA, trackB) => {
@@ -138,25 +159,82 @@ $black: #1d1d1d;
   max-width: 940px;
   margin: auto;
   margin-bottom: 60px;
-  @media (max-width: 940px) {
+  padding-left: 10px;
+  padding-right: 10px;
+
+  @media (min-width: 768px) {
     padding-left: 30px;
     padding-right: 30px;
   }
 }
 
-.vertical-wrapper {
+.selected-container {
+  text-align: center;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 11;
   background: $black;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
   border-radius: 15px;
-  border: 1px solid #323232;
+}
+
+.selected-items {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-evenly;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  .selected-item,
+  .img-placeholder {
+    display: flex;
+    cursor: pointer;
+    flex: 1;
+    margin-left: 10px;
+    margin-right: 10px;
+    max-width: 15%;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+
+  img,
+  .img-placeholder {
+    display: flex;
+    border-radius: 10%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.content-container {
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  border-radius: 15px;
+  // border: 1px solid #323232;
+  background: $black;
+}
+
+.vertical-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  flex-direction: row;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
 }
 
 .artist,
@@ -171,22 +249,31 @@ $black: #1d1d1d;
   border-radius: 8px;
   align-items: center;
   border: 1px solid #070707;
-  transition: all 0.15s ease-out;
+  transition: all 0.1s ease-in-out;
+  justify-content: flex-start;
+
+  @media (min-width: 768px) {
+    max-width: 280px;
+  }
 
   &.selected {
     background-color: $green;
   }
 
   &:hover {
-    transform: scale(1.2);
     border: 1px solid $white;
     z-index: 10;
+    transform: scale(1.05);
+    @media (min-width: 768px) {
+      transform: scale(1.2);
+    }
   }
 
   a {
     text-decoration: none;
     color: #f2e5d5;
     display: flex;
+    line-height: 1;
 
     &:hover {
       color: $white;
@@ -197,9 +284,12 @@ $black: #1d1d1d;
   img {
     width: 40px;
     height: 40px;
-    margin-right: 10px;
+    margin-right: 20px;
     object-fit: cover;
     box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    @media (min-width: 768px) {
+      margin-right: 10px;
+    }
   }
 
   .name {

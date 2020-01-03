@@ -12,9 +12,7 @@
   color: white;
   background: rgb(11, 23, 23);
   background: linear-gradient(0deg, rgba(11, 23, 23, 1) 60%, #2e4b3d 100%);
-  padding-top: 60px;
   height: 100vh;
   overflow-y: scroll;
-  padding-bottom: 60px;
 }
 </style>

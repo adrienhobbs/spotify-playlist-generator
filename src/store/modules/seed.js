@@ -35,6 +35,9 @@ const getters = {
   },
   canSelect(state, getters) {
     return getters.numSelected < 5;
+  },
+  selectedItems(state) {
+    return [...state.tracks, ...state.artists, ...state.genres];
   }
 };
 

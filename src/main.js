@@ -5,7 +5,7 @@ import firebase from "./firebaseSetup";
 import "./axiosSetup";
 import store from "./store/index";
 import "normalize.css";
-
+import "./app.scss";
 Vue.config.productionTip = false;
 
 new Vue({

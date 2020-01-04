@@ -1,19 +1,31 @@
 <template>
-  <div class="track" :class="{ selected: track.selected }">
-    <a :href="track.album.external_urls.spotify" target="_blank">
-      <img :src="track.album.images[2].url" alt="" />
-    </a>
+  <div
+    class="track pill"
+    :data-type="item.type"
+    :class="{
+      selected: item.selected,
+      disabled: !canSelect && !item.selected
+    }"
+    @click="$emit('changed')"
+  >
+    <div :href="item.album.external_urls.spotify" target="_blank">
+      <img :src="item.album.images[2].url" alt="" />
+    </div>
     <div class="track-info">
-      <a class="track-name" :href="track.external_urls.spotify" target="_blank">
-        {{ track.name }}
-      </a>
-      <a
-        class="artist-name"
-        :href="track.artists[0].external_urls.spotify"
+      <div
+        class="track-name"
+        :href="item.external_urls.spotify"
         target="_blank"
       >
-        {{ track.artists[0].name }}
-      </a>
+        {{ item.name }}
+      </div>
+      <div
+        class="artist-name"
+        :href="item.artists[0].external_urls.spotify"
+        target="_blank"
+      >
+        {{ item.artists[0].name }}
+      </div>
     </div>
   </div>
 </template>
@@ -22,8 +34,12 @@
 export default {
   name: "Track",
   props: {
-    track: {
+    item: {
       type: Object,
+      required: true
+    },
+    canSelect: {
+      type: Boolean,
       required: true
     }
   }

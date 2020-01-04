@@ -1,11 +1,16 @@
 <template>
-  <div class="artist" :class="{ selected: artist.selected }">
-    <img :src="artist.images[2].url" alt="" />
-    <a class="artist-name" :href="artist.external_urls.spotify" target="_blank">
-      {{ artist.name }}
-    </a>
-    <!-- {{ artist.popularity }} -->
-    <!-- {{ artist.id }} -->
+  <div
+    class="artist pill"
+    :class="{
+      selected: item.selected,
+      disabled: !canSelect && !item.selected
+    }"
+    @click="$emit('changed')"
+  >
+    <img :src="item.images[2].url" alt="" />
+    <div class="artist-name" :href="item.external_urls.spotify" target="_blank">
+      {{ item.name }}
+    </div>
   </div>
 </template>
 
@@ -13,8 +18,12 @@
 export default {
   name: "Artist",
   props: {
-    artist: {
+    item: {
       type: Object,
+      required: true
+    },
+    canSelect: {
+      type: Boolean,
       required: true
     }
   }

@@ -53,15 +53,17 @@ const actions = {
     commit(mutationType, item);
     dispatch(seedActionType, item, { root: true });
   },
-  getAll({ commit }, forceUpdate = false) {
-    return Storage.getListeningData(forceUpdate).then(data => {
-      commit("SET_ALL", {
-        tracks: data.tracks,
-        artists: data.artists,
-        recentlyPlayed: data.recentlyPlayed,
-        updatedAt: data.lastUpdated
-      });
-    });
+  async getAll({ commit }, forceUpdate = true) {
+    const getListeningData =
+      forceUpdate || Storage.refreshData
+        ? Api.getListeningData
+        : Storage.getListeningData;
+
+    const listeningData = await getListeningData();
+
+    Storage.saveListeningData(listeningData);
+
+    commit("SET_ALL", listeningData);
   },
   getRecentlyPlayed({ commit }) {
     return Api.getRecentlyPlayed().then(res => {

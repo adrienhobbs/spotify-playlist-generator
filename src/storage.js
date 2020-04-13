@@ -1,4 +1,3 @@
-import api from "./api";
 const msInDay = 86400000;
 const msToMins = ms => Math.round(ms * 0.00001666667);
 
@@ -31,29 +30,29 @@ export default (function() {
     });
   };
 
-  const setListeningDataToLocalStorage = data => {
-    Object.keys(data).forEach(key => {
-      setItem(key, data[key]);
-    });
+  const saveListeningData = data => {
+    if (data.lastUpdated !== lastUpdated) {
+      console.log("saving");
+
+      Object.keys(data).forEach(key => {
+        setItem(key, data[key]);
+      });
+
+      setItem("lastUpdated", Date.now());
+    }
     return getListeningDataFromLocalStorage();
   };
 
   // todo remove reference to api here?? creates an unnecessary dependency...
-  const getListeningData = forceUpdate => {
-    if (forceUpdate || !lastUpdated || shouldUpdate(lastUpdated)) {
-      log("Get Listening Data from API!");
-      return api.getListeningData().then(res => {
-        setItem("lastUpdated", Date.now());
-        return setListeningDataToLocalStorage(res);
-      });
-    } else {
-      log("Retrieving Listening Data from localstorage!");
-      return getListeningDataFromLocalStorage();
-    }
+  const getListeningData = () => {
+    log("Retrieving Listening Data from localstorage!");
+    return getListeningDataFromLocalStorage();
   };
 
   return {
+    saveListeningData,
     getListeningData,
+    refreshData: !lastUpdated || shouldUpdate(lastUpdated),
     lastUpdated,
     setItem,
     getItem

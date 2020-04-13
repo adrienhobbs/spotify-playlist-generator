@@ -134,6 +134,7 @@ app.get("/listening-data", async (req, res) => {
     recentlyPlayed: null
   };
 
+  // break these out into functions
   const tracks = ranges.map(range =>
     Spotify.getMyTopTracks({ time_range: range, limit: 50 }).then(res => {
       listeningData.tracks[range] = res.body.items.map(pruneTrack);

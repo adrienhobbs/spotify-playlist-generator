@@ -32,8 +32,6 @@ export default (function() {
 
   const saveListeningData = data => {
     if (data.lastUpdated !== lastUpdated) {
-      console.log("saving");
-
       Object.keys(data).forEach(key => {
         setItem(key, data[key]);
       });

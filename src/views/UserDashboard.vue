@@ -9,8 +9,13 @@
       :items="selectedItems"
     />
     <div class="content-container">
+      <select v-model="selectedGenre" name="" id="">
+        <option v-for="(genre, i) in topGenres" :value="genre.name" :key="i">{{
+          genre.name
+        }}</option>
+      </select>
       <div class="vertical-wrapper">
-        <div v-for="item in [...allTracks, ...allArtists]" :key="item.id">
+        <div v-for="item in selectedArtists" :key="item.id">
           <component
             @changed="toggleItemSelected(item)"
             :is="item.type + '-pill'"
@@ -40,7 +45,9 @@ export default {
   data() {
     return {
       allTracks: [],
-      allArtists: []
+      allArtists: [],
+      topGenres: false,
+      selectedGenre: ""
     };
   },
   computed: {
@@ -49,7 +56,16 @@ export default {
       tracks: "listeningData/tracks",
       selectedItems: "seed/selectedItems",
       canSelect: "seed/canSelect"
-    })
+    }),
+    selectedArtists() {
+      if (this.selectedGenre) {
+        return this.allArtists.filter(artist =>
+          artist.genres.includes(this.selectedGenre)
+        );
+      } else {
+        return this.allTracks;
+      }
+    }
   },
   mounted() {
     // lets move this into the store
@@ -80,13 +96,15 @@ export default {
       });
     });
 
+    console.log(genreCounts);
+
     const counts = Object.values(genreCounts);
     const names = Object.keys(genreCounts);
-    const topGenres = counts
+    this.topGenres = counts
       .map((count, i) => ({ count, name: names[i] }))
       .sort((a, b) => a.count < b.count)
-      .splice(0, 25);
-    console.log(topGenres);
+      .splice(0, 50);
+    console.log(this.topGenres);
 
     // this.allTracks = allTracks.sort((trackA, trackB) => {
     //   return trackA.popularity < trackB.popularity;
@@ -99,6 +117,9 @@ export default {
     });
   },
   methods: {
+    testFilter(e) {
+      console.log(e);
+    },
     toggleItemSelected(item) {
       if (this.canSelect || item.selected) {
         this.$store.dispatch("listeningData/toggleItem", item);

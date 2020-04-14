@@ -4,7 +4,12 @@
       <div v-if="!items.length">
         Select up to 5 artists or tracks to get started.
       </div>
-      <div class="selected-item" v-for="item in items" :key="item.id">
+      <div
+        class="selected-item"
+        :class="{ [`${item.type + '-selected'}`]: true }"
+        v-for="item in items"
+        :key="item.id"
+      >
         <img
           @click="$emit('changed', item)"
           :src="item.images ? item.images[0].url : item.album.images[0].url"
@@ -45,6 +50,7 @@ $black: #1d1d1d;
   padding-bottom: 10px;
   margin-bottom: 20px;
   border-radius: 15px;
+  border-bottom: 1px solid #070707;
 }
 
 .selected-items {

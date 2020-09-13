@@ -17,13 +17,13 @@ const mutations = {
   },
   REMOVE_TRACK(state, trackToRemove) {
     const indexToRemove = state.tracks.findIndex(
-      track => track.id === trackToRemove.id
+      (track) => track.id === trackToRemove.id
     );
     state.tracks.splice(indexToRemove, 1);
   },
   REMOVE_ARTIST(state, artistToRemove) {
     const indexToRemove = state.artists.findIndex(
-      artist => artist.id === artistToRemove.id
+      (artist) => artist.id === artistToRemove.id
     );
     state.artists.splice(indexToRemove, 1);
   }
@@ -36,8 +36,12 @@ const getters = {
   canSelect(state, getters) {
     return getters.numSelected < 5;
   },
-  selectedItems(state) {
-    return [...state.tracks, ...state.artists, ...state.genres];
+  selectedItems(state, { numSelected }) {
+    let selected = [...state.tracks, ...state.artists, ...state.genres];
+    if (numSelected <= 4) {
+      selected.push({});
+    }
+    return selected;
   }
 };
 
@@ -54,10 +58,10 @@ const actions = {
     commit(mutationType, item);
   },
   async getRecommendations({ commit, state }) {
-    const seed_artists = state.artists.map(artist => artist.id);
-    const seed_tracks = state.tracks.map(track => track.id);
+    const seed_artists = state.artists.map((artist) => artist.id);
+    const seed_tracks = state.tracks.map((track) => track.id);
     const tracks = await Api.getRecommendations({ seed_artists, seed_tracks });
-    const trackUris = tracks.map(track => track.uri).join(",");
+    const trackUris = tracks.map((track) => track.uri).join(",");
     await Api.addTracksToPlaylist(trackUris);
   }
 };

@@ -1,5 +1,6 @@
 import Storage from "@/storage";
 import Api from "@/api";
+import uniqBy from "lodash.uniqby";
 
 const state = {
   tracks: [],
@@ -28,19 +29,35 @@ const mutations = {
 
 const getters = {
   tracks(state) {
-    return {
-      short_term: state.tracks.short_term,
-      medium_term: state.tracks.medium_term,
-      long_term: state.tracks.long_term,
-      recent: state.recentlyPlayed
-    };
+    return uniqBy([
+      ...state.tracks.short_term,
+      ...state.tracks.medium_term,
+      ...state.tracks.long_term
+    ]);
   },
   artists(state) {
-    return {
-      short_term: state.artists.short_term,
-      medium_term: state.artists.medium_term,
-      long_term: state.artists.long_term
-    };
+    return uniqBy(
+      [
+        ...state.artists.short_term,
+        ...state.artists.medium_term,
+        ...state.artists.long_term
+      ],
+      "id"
+    ).sort((a, b) => (a.name.charAt(0) > b.name.charAt(0) ? 1 : -1));
+  },
+  genres(state, { artists }) {
+    let genreCounts = {};
+    artists.forEach((artist) => {
+      artist.genres.forEach((genre) => {
+        genreCounts[genre] = genreCounts[genre] ? genreCounts[genre] + 1 : 1;
+      });
+    });
+    const names = Object.keys(genreCounts);
+    const counts = Object.values(genreCounts);
+
+    return counts
+      .map((count, i) => ({ count, name: names[i] }))
+      .sort((a, b) => (a.count < b.count ? 1 : -1));
   }
 };
 
@@ -66,7 +83,7 @@ const actions = {
     commit("SET_ALL", listeningData);
   },
   getRecentlyPlayed({ commit }) {
-    return Api.getRecentlyPlayed().then(res => {
+    return Api.getRecentlyPlayed().then((res) => {
       commit("SET_RECENTLY_PLAYED", res.recentlyPlayed);
       Storage.setItem("recentlyPlayed", res.recentlyPlayed);
       return res.recentlyPlayed;

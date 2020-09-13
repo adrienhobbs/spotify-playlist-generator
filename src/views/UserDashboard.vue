@@ -4,7 +4,19 @@
       <button @click="test">test</button>
       <button @click="logout">logout</button>
     </div>
-    <SelectedItems
+    <h2>
+      Add Music Like:
+    </h2>
+    <div class="fields">
+      <SearchField
+        v-for="(item, n) in selectedItems"
+        :key="n"
+        :item="item"
+        :artists="artists"
+      />
+    </div>
+    <!-- <SearchField @selected="handleSelected" :artists="artists" /> -->
+    <!-- <SelectedItems
       @changed="item => toggleItemSelected(item)"
       :items="selectedItems"
     />
@@ -24,7 +36,7 @@
           />
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -34,13 +46,16 @@ import uniqBy from "lodash.uniqby";
 import Track from "../components/Track";
 import Artist from "../components/Artist";
 import SelectedItems from "../components/SelectedItems";
+import SearchField from "@/components/SearchField";
+import API from "../testapi";
 
 export default {
   name: "UserDashboard",
   components: {
-    "artist-pill": Artist,
-    "track-pill": Track,
-    SelectedItems
+    // "artist-pill": Artist,
+    // "track-pill": Track,
+    // SelectedItems
+    SearchField
   },
   data() {
     return {
@@ -54,12 +69,13 @@ export default {
     ...mapGetters({
       artists: "listeningData/artists",
       tracks: "listeningData/tracks",
+      genres: "listeningData/genres",
       selectedItems: "seed/selectedItems",
       canSelect: "seed/canSelect"
     }),
     selectedArtists() {
       if (this.selectedGenre) {
-        return this.allArtists.filter(artist =>
+        return this.allArtists.filter((artist) =>
           artist.genres.includes(this.selectedGenre)
         );
       } else {
@@ -68,58 +84,9 @@ export default {
     }
   },
   mounted() {
-    // lets move this into the store
-    const allTracks = uniqBy(
-      [
-        ...this.tracks.recent,
-        ...this.tracks.short_term,
-        ...this.tracks.medium_term,
-        ...this.tracks.long_term
-      ],
-      "id"
-    );
-
-    const allArtists = uniqBy(
-      [
-        ...this.artists.short_term,
-        ...this.artists.medium_term,
-        ...this.artists.long_term
-      ],
-      "id"
-    );
-
-    let genreCounts = {};
-
-    allArtists.forEach(artist => {
-      artist.genres.forEach(genre => {
-        genreCounts[genre] = genreCounts[genre] ? genreCounts[genre] + 1 : 1;
-      });
-    });
-
-    console.log(genreCounts);
-
-    const counts = Object.values(genreCounts);
-    const names = Object.keys(genreCounts);
-    this.topGenres = counts
-      .map((count, i) => ({ count, name: names[i] }))
-      .sort((a, b) => a.count < b.count)
-      .splice(0, 50);
-    console.log(this.topGenres);
-
-    // this.allTracks = allTracks.sort((trackA, trackB) => {
-    //   return trackA.popularity < trackB.popularity;
-    // });
-
-    this.allTracks = allTracks;
-
-    this.allArtists = allArtists.sort((artistA, artistB) => {
-      return artistA.name.charAt(0) > artistB.name.charAt(0);
-    });
+    console.log(API);
   },
   methods: {
-    testFilter(e) {
-      console.log(e);
-    },
     toggleItemSelected(item) {
       if (this.canSelect || item.selected) {
         this.$store.dispatch("listeningData/toggleItem", item);
@@ -133,7 +100,7 @@ export default {
     },
     isSelected(id) {
       return this.$store.state.listeningData.artists.find(
-        artist => artist.id === id
+        (artist) => artist.id === id
       );
     }
   }
@@ -145,6 +112,12 @@ $green: #2f7353;
 $white: #dadada;
 $black: #1d1d1d;
 
+.fields {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
 .header {
   margin-bottom: 30px;
   padding-top: 30px;

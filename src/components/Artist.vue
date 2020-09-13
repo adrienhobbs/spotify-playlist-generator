@@ -2,10 +2,9 @@
   <div
     class="artist pill"
     :class="{
-      selected: item.selected,
-      disabled: !canSelect && !item.selected
+      selected: selected
     }"
-    @click="$emit('changed')"
+    @click="$emit('selected', item)"
   >
     <img :src="item.images[2].url" alt="" />
     <div class="artist-name" :href="item.external_urls.spotify" target="_blank">
@@ -22,10 +21,14 @@ export default {
       type: Object,
       required: true
     },
-    canSelect: {
+    selected: {
       type: Boolean,
-      required: true
+      required: false
     }
+    // canSelect: {
+    //   type: Boolean,
+    //   required: true
+    // }
   }
 };
 </script>
